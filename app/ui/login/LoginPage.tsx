@@ -39,6 +39,8 @@ function LoginPage() {
       email: "",
     },
   });
+  
+  
 
   useEffect(() => {
     reset({
@@ -53,9 +55,6 @@ function LoginPage() {
         notify("Invalid email or password")
       );
       if (response.status === 200 || response.status === 201) {
-        const { token, user } = response.data;
-        document.cookie = `token=${token}; path=/;`;
-        localStorage.setItem("user", JSON.stringify(user));
         router.push("/admin#/cars");
         setOpenSucces(true);
         reset();
