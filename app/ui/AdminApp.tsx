@@ -1,4 +1,5 @@
 "use client";
+  
 import { Admin, Resource, fetchUtils, radiantDarkTheme } from "react-admin";
 import CarsList from "./cars/CarsList";
 import CreateCars from "./cars/CreateCars";
@@ -11,8 +12,11 @@ import PostUser from "./user/PostUser";
 import ShowUser from "./user/ShowUser";
 import AppointList from "./appoint/AppointList";
 import { UrlSite } from "../utils";
+import authProvider from "../utils/authProvider";
+
 const apiUrl=UrlSite();
 const dataProvider: any = {
+  ... authProvider,
   getList: async (resource: any, params: any) => {
     const { json, headers } = await fetchUtils.fetchJson(
       `${apiUrl}/${resource}?page=${params.pagination.page}&perPage=${params.pagination.perPage}`
@@ -122,6 +126,7 @@ const dataProvider: any = {
 export const App = () => (
   <Admin
     dataProvider={dataProvider}
+    authProvider={authProvider}
     theme={orangeTheme}
     darkTheme={radiantDarkTheme}
   >

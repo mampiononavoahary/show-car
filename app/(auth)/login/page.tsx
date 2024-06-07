@@ -23,7 +23,7 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 function Page() {
-  const rooter = useRouter();
+  const router = useRouter();
   const [openSucces, setOpenSucces] = useState<boolean>(false);
   const [openError, setOpenError] = useState<boolean>(false);
   const {
@@ -60,8 +60,12 @@ function Page() {
         }
       );
       if (response.status === 200 || response.status === 201) {
-        rooter.push("/admin#/cars")
+        const { token, user } = response.data;
+        document.cookie = `token=${token}; path=/;`;
+        localStorage.setItem('user', JSON.stringify(user));
+        router.push("/admin#/cars");
         setOpenSucces(true);
+        reset();
         reset();
       }
     } catch (error) {
