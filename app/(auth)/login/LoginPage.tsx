@@ -1,19 +1,18 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
+
+import React, { useEffect, useState } from "react";
 import { Button, Grid, TextField, Typography } from "@mui/material";
-import bgImage from "../../../assets/images/1716955138152.jpg";
-import Logo from "../../../assets/images/City driver-bro.png";
 import Image from "next/image";
 import Link from "next/link";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useRouter } from "next/navigation";
+import { useLogin, useNotify } from "react-admin";
+import bgImage from "../../../assets/images/1716955138152.jpg";
+import Logo from "../../../assets/images/City driver-bro.png";
 import TosteSucces from "@/app/components/toste/TosteSucces";
 import TosteError from "@/app/components/toste/TosteErro";
-import { useEffect, useState } from "react";
-import { UrlSite } from "@/app/utils";
-import axios from "axios";
-import { useRouter } from "next/navigation";
 
 const schema = z.object({
   email: z.string().email("Invalid email address"),
@@ -22,10 +21,12 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>;
 
-function Page() {
+function LoginPage() {
   const router = useRouter();
   const [openSucces, setOpenSucces] = useState<boolean>(false);
   const [openError, setOpenError] = useState<boolean>(false);
+  const login = useLogin();
+  const notify = useNotify();
   const {
     register,
     handleSubmit,
@@ -47,25 +48,16 @@ function Page() {
   }, [reset]);
 
   const onSubmit: SubmitHandler<FormValues> = async (formData) => {
-    console.log(formData);
-
     try {
-      const response = await axios.post(
-        UrlSite("users/login"),
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+      const response = await login({password: formData.password, username: formData.email}).catch(() =>
+        notify("Invalid email or password")
       );
       if (response.status === 200 || response.status === 201) {
         const { token, user } = response.data;
         document.cookie = `token=${token}; path=/;`;
-        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem("user", JSON.stringify(user));
         router.push("/admin#/cars");
         setOpenSucces(true);
-        reset();
         reset();
       }
     } catch (error) {
@@ -76,9 +68,22 @@ function Page() {
 
   return (
     <>
-      <TosteSucces message={"Success"} setOpen={setOpenSucces} open={openSucces} />
-      <TosteError message={"Try again"} setOpen={setOpenError} open={openError} />
-      <Grid container justifyContent={"center"} alignItems={"center"} minHeight={"100vh"}>
+      <TosteSucces
+        message={"Success"}
+        setOpen={setOpenSucces}
+        open={openSucces}
+      />
+      <TosteError
+        message={"Try again"}
+        setOpen={setOpenError}
+        open={openError}
+      />
+      <Grid
+        container
+        justifyContent={"center"}
+        alignItems={"center"}
+        minHeight={"100vh"}
+      >
         <Grid
           container
           width={"40%"}
@@ -149,7 +154,12 @@ function Page() {
               />
               <Grid container direction={"row"} justifyContent={"center"}>
                 <Grid container item sm={9}>
-                  <Button type="submit" fullWidth sx={{ bgcolor: "orange", mt: 2 }} variant="contained">
+                  <Button
+                    type="submit"
+                    fullWidth
+                    sx={{ bgcolor: "orange", mt: 2 }}
+                    variant="contained"
+                  >
                     Login
                   </Button>
                 </Grid>
@@ -173,4 +183,4 @@ function Page() {
   );
 }
 
-export default Page;
+export default LoginPage;

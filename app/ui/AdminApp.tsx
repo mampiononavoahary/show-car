@@ -1,5 +1,5 @@
 "use client";
-  
+
 import { Admin, Resource, fetchUtils, radiantDarkTheme } from "react-admin";
 import CarsList from "./cars/CarsList";
 import CreateCars from "./cars/CreateCars";
@@ -13,6 +13,7 @@ import ShowUser from "./user/ShowUser";
 import AppointList from "./appoint/AppointList";
 import { UrlSite } from "../utils";
 import authProvider from "../utils/authProvider";
+import LoginPage from "../(auth)/login/LoginPage";
 
 const apiUrl=UrlSite();
 const dataProvider: any = {
@@ -128,6 +129,7 @@ export const App = () => (
     dataProvider={dataProvider}
     authProvider={authProvider}
     theme={orangeTheme}
+    loginPage={LoginPage}
     darkTheme={radiantDarkTheme}
   >
     <Resource
