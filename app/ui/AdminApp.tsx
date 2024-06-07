@@ -1,26 +1,156 @@
-"use client"; 
+"use client";
+import {
+  Admin,
+  Layout,
+  LayoutProps,
+  Resource,
+  fetchUtils,
+  houseLightTheme,
+  nanoDarkTheme,
+  nanoLightTheme,
+  radiantDarkTheme,
+} from "react-admin";
+import CarsList from "./cars/CarsList";
+import CreateCars from "./cars/CreateCars";
+import EditCar from "./cars/EditCar";
+import { IconCar, IconUsersGroup } from "@tabler/icons-react";
+import CarEdit from "./cars/EditCar";
+import ShowCar from "./cars/ShowCar";
+import { MyLayout } from "./components/MyLayout";
+import orangeTheme from "../Helper/Theme";
+import UserList from "./user/UserList";
+import { headers } from "next/headers";
+import PostUser from "./user/PostUser";
 
-import { Admin, Resource, ListGuesser, EditGuesser } from "react-admin";
-import jsonServerProvider from "ra-data-json-server";
+const apiUrl = "http://localhost:8080";
+const dataProvider: any = {
+  getList: async (resource:any, params:any) => {
+    const { json, headers } = await fetchUtils.fetchJson(
+      `${apiUrl}/${resource}?page=${params.pagination.page}&perPage=${params.pagination.perPage}`
+    );
 
-const dataProvider = jsonServerProvider("https://jsonplaceholder.typicode.com");
+    console.log("Fetched data:", json);
 
-const AdminApp = () => (
-  <Admin dataProvider={dataProvider}>
+    if (resource === 'cars') {
+      return {
+        data: json.items,
+        total: headers.get('X-Total-Count')
+      };
+    } else {
+      return {
+        data: json,
+        total: headers.get('X-Total-Count')
+      };
+    }
+  }
+,
+  
+  getOne: async (resource: string, params: any) => {
+    const { json } = await fetchUtils.fetchJson(
+      `${apiUrl}/${resource}/${params.id}`
+    );
+
+    const singleResource = json;
+
+    return {
+      data: singleResource,
+    };
+  },
+  create: async (resource: string, params: any) => {
+    console.log("Data sent to API :", JSON.stringify(params.data));
+    let requestBody;
+    if (resource === "cars") {
+        requestBody = JSON.stringify([params.data]);
+    } else {
+        requestBody = JSON.stringify(params.data);
+    }
+    
+    const { json } = await fetchUtils.fetchJson(`${apiUrl}/${resource}`, {
+        method: "POST",
+        body: requestBody
+    });
+
+    const createdResource = json;
+
+    return {
+        data: {
+            ...createdResource,
+            id: createdResource.id,
+        },
+    };
+},
+
+  update: async (resource: string, params: any) => {
+    const { json } = await fetchUtils.fetchJson(
+      `${apiUrl}/${resource}/${params.id}`,
+      {
+        method: "PUT",
+        body: JSON.stringify(params.data),
+      }
+    );
+
+    const updatedResource = json;
+
+    return {
+      data: updatedResource,
+    };
+  },
+  delete: async (resource: string, params: any) => {
+    const { json } = await fetchUtils.fetchJson(
+      `${apiUrl}/${resource}/${params.id}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    const deletedResource = json;
+
+    return {
+      data: deletedResource,
+    };
+  },
+  deleteMany: async (resource: string, params: any) => {
+    const { ids } = params;
+
+    const deletePromises = ids.map(async (id: any) => {
+      const { json } = await fetchUtils.fetchJson(
+        `${apiUrl}/${resource}/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+      return json;
+    });
+
+    const deletedResources = await Promise.all(deletePromises);
+
+    return {
+      data: deletedResources,
+    };
+  },
+};
+// const CustomLayout = (props: LayoutProps) => (
+//   <Layout {...props} menu={MenuLive} />
+// );
+export const App = () => (
+  <Admin
+    dataProvider={dataProvider}
+    theme={orangeTheme}
+    darkTheme={radiantDarkTheme}
+  >
+    <Resource
+      name="cars"
+      list={CarsList}
+      create={CreateCars}
+      edit={CarEdit}
+      show={ShowCar}
+      icon={IconCar}
+    />
     <Resource
       name="users"
-      list={ListGuesser}
-      edit={EditGuesser}
-      recordRepresentation="name"
+      list={UserList}
+      create={PostUser}
+      icon={IconUsersGroup}
     />
-    <Resource
-      name="posts"
-      list={ListGuesser}
-      edit={EditGuesser}
-      recordRepresentation="title"
-    />
-    <Resource name="comments" list={ListGuesser} edit={EditGuesser} />
   </Admin>
 );
-
-export default AdminApp;
