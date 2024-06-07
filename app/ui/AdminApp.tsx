@@ -13,7 +13,7 @@ import ShowUser from "./user/ShowUser";
 import AppointList from "./appoint/AppointList";
 import { UrlSite } from "../utils";
 import authProvider from "../utils/authProvider";
-import LoginPage from "../(auth)/login/LoginPage";
+import LoginPage from "./login/LoginPage";
 
 const apiUrl=UrlSite();
 const dataProvider: any = {
