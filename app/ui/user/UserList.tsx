@@ -13,7 +13,7 @@ import {
 
 const UserList: React.FC<any> = (props) => (
     <List {...props} pagination={<Pagination />}>
-      <Datagrid >
+      <Datagrid rowClick="show">
         <TextField source="name" />
         <TextField source="email" />
         {/* <EditButton label="" /> */}

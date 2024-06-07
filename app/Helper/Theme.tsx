@@ -7,7 +7,7 @@ const orangeTheme = createMuiTheme({
       main: orange[700],
     },
     secondary: {
-      main: orange[100],
+      main: orange[700],
     },
   },
 });

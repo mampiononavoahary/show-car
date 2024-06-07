@@ -13,6 +13,7 @@ import TosteError from "@/app/components/toste/TosteErro";
 import { useEffect, useState } from "react";
 import { UrlSite } from "@/app/utils";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const schema = z.object({
   email: z.string().email("Invalid email address"),
@@ -22,6 +23,7 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 function Page() {
+  const rooter = useRouter();
   const [openSucces, setOpenSucces] = useState<boolean>(false);
   const [openError, setOpenError] = useState<boolean>(false);
   const {
@@ -49,7 +51,7 @@ function Page() {
 
     try {
       const response = await axios.post(
-        UrlSite("auth/login"),
+        UrlSite("users/login"),
         formData,
         {
           headers: {
@@ -58,7 +60,7 @@ function Page() {
         }
       );
       if (response.status === 200 || response.status === 201) {
-        window.location.href = '/home';
+        rooter.push("/admin#/cars")
         setOpenSucces(true);
         reset();
       }

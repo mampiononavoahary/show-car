@@ -1,29 +1,33 @@
-import { Grid } from "@mui/material";
+import { Avatar, Grid } from "@mui/material";
+
 import {
   Create,
-  NumberInput,
   SimpleForm,
   TextInput,
   required,
 } from "react-admin";
+import Image from "next/image";
 
 const PostUser = () => {
   return (
     <Create>
       <SimpleForm>
         <Grid container spacing={2}>
-          <Grid item xs={6}>
+          
+          <Grid item xs={12} md={6}>
             <TextInput
               source="name"
+              label="Name"
               validate={[required()]}
               variant="outlined"
               fullWidth
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6}>
             <TextInput
               type="email"
               source="email"
+              label="Email"
               validate={[required()]}
               variant="outlined"
               fullWidth

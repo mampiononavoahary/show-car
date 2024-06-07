@@ -1,50 +1,37 @@
 "use client";
-import {
-  Admin,
-  Layout,
-  LayoutProps,
-  Resource,
-  fetchUtils,
-  houseLightTheme,
-  nanoDarkTheme,
-  nanoLightTheme,
-  radiantDarkTheme,
-} from "react-admin";
+import { Admin, Resource, fetchUtils, radiantDarkTheme } from "react-admin";
 import CarsList from "./cars/CarsList";
 import CreateCars from "./cars/CreateCars";
-import EditCar from "./cars/EditCar";
-import { IconCar, IconUsersGroup } from "@tabler/icons-react";
+import { IconCar, IconMenu, IconUsersGroup } from "@tabler/icons-react";
 import CarEdit from "./cars/EditCar";
 import ShowCar from "./cars/ShowCar";
-import { MyLayout } from "./components/MyLayout";
 import orangeTheme from "../Helper/Theme";
 import UserList from "./user/UserList";
-import { headers } from "next/headers";
 import PostUser from "./user/PostUser";
-
-const apiUrl = "http://localhost:8080";
+import ShowUser from "./user/ShowUser";
+import AppointList from "./appoint/AppointList";
+import { UrlSite } from "../utils";
+const apiUrl=UrlSite();
 const dataProvider: any = {
-  getList: async (resource:any, params:any) => {
+  getList: async (resource: any, params: any) => {
     const { json, headers } = await fetchUtils.fetchJson(
       `${apiUrl}/${resource}?page=${params.pagination.page}&perPage=${params.pagination.perPage}`
     );
 
     console.log("Fetched data:", json);
 
-    if (resource === 'cars') {
+    if (resource === "cars" ) {
       return {
         data: json.items,
-        total: headers.get('X-Total-Count')
+        total: headers.get("X-Total-Count"),
       };
     } else {
       return {
         data: json,
-        total: headers.get('X-Total-Count')
+        total: headers.get("X-Total-Count"),
       };
     }
-  }
-,
-  
+  },
   getOne: async (resource: string, params: any) => {
     const { json } = await fetchUtils.fetchJson(
       `${apiUrl}/${resource}/${params.id}`
@@ -60,25 +47,25 @@ const dataProvider: any = {
     console.log("Data sent to API :", JSON.stringify(params.data));
     let requestBody;
     if (resource === "cars") {
-        requestBody = JSON.stringify([params.data]);
+      requestBody = JSON.stringify([params.data]);
     } else {
-        requestBody = JSON.stringify(params.data);
+      requestBody = JSON.stringify(params.data);
     }
-    
+
     const { json } = await fetchUtils.fetchJson(`${apiUrl}/${resource}`, {
-        method: "POST",
-        body: requestBody
+      method: "POST",
+      body: requestBody,
     });
 
     const createdResource = json;
 
     return {
-        data: {
-            ...createdResource,
-            id: createdResource.id,
-        },
+      data: {
+        ...createdResource,
+        id: createdResource.id,
+      },
     };
-},
+  },
 
   update: async (resource: string, params: any) => {
     const { json } = await fetchUtils.fetchJson(
@@ -150,7 +137,13 @@ export const App = () => (
       name="users"
       list={UserList}
       create={PostUser}
+      show={ShowUser}
       icon={IconUsersGroup}
+    />
+    <Resource
+      name="appointments"
+      list={AppointList}
+      icon={IconMenu}
     />
   </Admin>
 );

@@ -1,3 +1,8 @@
-export function UrlSite(lien:string) {
-  return "http://localhost:8080" + "/" + lien;
-}
+export function UrlSite(lien:string = "") {
+  if (lien=="") {
+    
+    return process.env.NEXT_PUBLIC_API_URL ;
+  }
+    return process.env.NEXT_PUBLIC_API_URL + "/" + lien;
+  }
+  

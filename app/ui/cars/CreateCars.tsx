@@ -27,11 +27,11 @@ const CustomToolbar = (props: any) => (
     </Toolbar>
   </Grid>
 );
-const UploadImages = ({ record }:any) => (
-    <div>
-        <h4>Télécharger des images</h4>
-        <input type="file" multiple accept="image/*" />
-    </div>
+const UploadImages = ({ record }: any) => (
+  <div>
+    <h4>Télécharger des images</h4>
+    <input type="file" multiple accept="image/*" />
+  </div>
 );
 const CreateCar = () => (
   <Create>
@@ -46,8 +46,17 @@ const CreateCar = () => (
               Car Datails
             </Typography>
           </Grid>
-          <Grid container item sm={6} mt={2} sx={{overflowY:"auto"}} maxHeight={"80%"} minHeight={"80%"} boxShadow={"0 0 10px"}>
-            {/* <FormDataConsumer>
+          <Grid
+            container
+            item
+            sm={6}
+            mt={2}
+            sx={{ overflowY: "auto" }}
+            maxHeight={"80%"}
+            minHeight={"80%"}
+            boxShadow={"0 0 10px"}
+          >
+            <FormDataConsumer>
               {({ formData, ...rest }) => (
                 <FileInput
                   source="images"
@@ -59,7 +68,7 @@ const CreateCar = () => (
                   <UploadImages />
                 </FileInput>
               )}
-            </FormDataConsumer> */}
+            </FormDataConsumer>
           </Grid>
           <Grid container sm={6} p={2}>
             <TextInput

@@ -4,10 +4,11 @@ import { MultiLevelMenu } from '@react-admin/ra-navigation';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import MusicIcon from '@mui/icons-material/MusicNote';
 import PeopleIcon from '@mui/icons-material/People';
+import { IconImageInPicture } from '@tabler/icons-react';
 
 const MyMenu = () => (
     <MultiLevelMenu>
-        <MultiLevelMenu.Item name="dashboard" to="/" label="Dashboard" icon={<DashboardIcon />} />
+        <MultiLevelMenu.Item name="cars" to="/" label="Image" icon={<IconImageInPicture />} />
         <MultiLevelMenu.Item name="songs" to="/songs" label="Songs" icon={<MusicIcon />}  />
         {/* The empty filter is required to avoid falling back to the previously set filter */}
         <MultiLevelMenu.Item name="artists" to={'/artists?filter={}'} label="Artists" icon={<PeopleIcon />}>
