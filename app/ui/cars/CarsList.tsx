@@ -1,9 +1,10 @@
 // CarsList.tsx
 
 import * as React from "react";
-import { List, Datagrid, TextField, Button, EditButton, Pagination } from 'react-admin';
+import { List, Datagrid, TextField, EditButton, Pagination } from 'react-admin';
+const PostPagination = () => <Pagination rowsPerPageOptions={[10, 25, 50, 100]} />;
 const CarsList: React.FC<any> = (props) => (
-  <List {...props} pagination={<Pagination />}>
+  <List {...props} pagination={<PostPagination />}>
     <Datagrid rowClick="show">
       <TextField source="name" />
       <TextField source="brand" />

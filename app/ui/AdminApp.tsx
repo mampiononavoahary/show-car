@@ -1,5 +1,4 @@
 "use client";
-
 import { Admin, Resource, fetchUtils, radiantDarkTheme } from "react-admin";
 import CarsList from "./cars/CarsList";
 import CreateCars from "./cars/CreateCars";
@@ -12,30 +11,18 @@ import PostUser from "./user/PostUser";
 import ShowUser from "./user/ShowUser";
 import AppointList from "./appoint/AppointList";
 import { UrlSite } from "../utils";
-import authProvider from "../utils/authProvider";
-import LoginPage from "./login/LoginPage";
-
+import ShowApp from "./appoint/ShowApp";
+import EditApp from "./appoint/EditApp";
 const apiUrl=UrlSite();
 const dataProvider: any = {
-  ... authProvider,
   getList: async (resource: any, params: any) => {
     const { json, headers } = await fetchUtils.fetchJson(
       `${apiUrl}/${resource}?page=${params.pagination.page}&perPage=${params.pagination.perPage}`
     );
-
-    console.log("Fetched data:", json);
-
-    if (resource === "cars" ) {
       return {
         data: json.items,
-        total: headers.get("X-Total-Count"),
+        total: json.totalItems,
       };
-    } else {
-      return {
-        data: json,
-        total: headers.get("X-Total-Count"),
-      };
-    }
   },
   getOne: async (resource: string, params: any) => {
     const { json } = await fetchUtils.fetchJson(
@@ -48,18 +35,24 @@ const dataProvider: any = {
       data: singleResource,
     };
   },
-  create: async (resource: string, params: any) => {
+ create: async (resource: string, params: any) => {
     console.log("Data sent to API :", JSON.stringify(params.data));
     let requestBody;
+    const headers: HeadersInit = new Headers();
+
     if (resource === "cars") {
-      requestBody = JSON.stringify([params.data]);
+      requestBody = new FormData();
+      requestBody.append('data', JSON.stringify(params.data));
+      headers.append('Accept', 'multipart/form-data');
     } else {
       requestBody = JSON.stringify(params.data);
+      headers.append('Content-Type', 'application/json');
     }
 
     const { json } = await fetchUtils.fetchJson(`${apiUrl}/${resource}`, {
       method: "POST",
       body: requestBody,
+      headers: headers,
     });
 
     const createdResource = json;
@@ -121,15 +114,10 @@ const dataProvider: any = {
     };
   },
 };
-// const CustomLayout = (props: LayoutProps) => (
-//   <Layout {...props} menu={MenuLive} />
-// );
 export const App = () => (
   <Admin
     dataProvider={dataProvider}
-    authProvider={authProvider}
     theme={orangeTheme}
-    loginPage={LoginPage}
     darkTheme={radiantDarkTheme}
   >
     <Resource
@@ -150,6 +138,8 @@ export const App = () => (
     <Resource
       name="appointments"
       list={AppointList}
+      show={ShowApp}
+      // edit={EditApp}
       icon={IconMenu}
     />
   </Admin>

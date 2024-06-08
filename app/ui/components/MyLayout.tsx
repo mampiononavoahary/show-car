@@ -1,9 +1,14 @@
-import { Layout } from 'react-admin';
-import { AppLocationContext } from '@react-admin/ra-navigation';
-import MyMenu from './MyMenu';
+import React from 'react';
+import { MenuItemLink } from 'react-admin';
 
-export const MyLayout = (props:any) => (
-  <AppLocationContext>
-    <Layout {...props} menu={MyMenu} />
-  </AppLocationContext>
-);
+const MyMenu = () => {
+  return (
+    <div>
+      <MenuItemLink to="/" primaryText="Home" />
+      <MenuItemLink to="/posts" primaryText="Posts" />
+      {/* Ajoutez d'autres éléments de menu ici */}
+    </div>
+  );
+};
+
+export default MyMenu;
