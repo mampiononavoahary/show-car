@@ -1,7 +1,6 @@
 import { Save } from "@mui/icons-material";
-import { Button, Grid, Toolbar, Typography } from "@mui/material";
+import { Box, Button, Grid, Toolbar, Typography } from "@mui/material";
 import Image from "next/image";
-import img from "@/assets/images/1716955138152.jpg";
 import {
   Create,
   TextInput,
@@ -27,12 +26,35 @@ const CustomToolbar = (props: any) => (
     </Toolbar>
   </Grid>
 );
-const UploadImages = ({ record }: any) => (
-  <div>
-    <h4>Télécharger des images</h4>
-    <input type="file" multiple accept="image/*" />
-  </div>
+
+const UploadImages = ({ formData }: any) => (
+  <Box
+    sx={{
+      display: 'flex',
+      overflowY: 'scroll',
+      overflowX: 'hidden',
+      maxWidth: '100%',
+      borderRadius: 1,
+      '&::-webkit-scrollbar': {
+        display: 'none',
+      },
+    }}
+  >
+    {formData.images &&
+      [...formData.images].slice(0, 1).map((file: any, index: number) => (
+        <Box key={index} sx={{ flex: '0 0 auto', m: 1 }}>
+          <Image
+            src={URL.createObjectURL(file.rawFile)}
+            alt={file.title}
+            width={200}
+            height={200}
+            style={{ borderRadius: '8px' }}
+          />
+        </Box>
+      ))}
+  </Box>
 );
+
 const CreateCar = () => (
   <Create>
     <SimpleForm
@@ -65,7 +87,7 @@ const CreateCar = () => (
                   multiple
                   {...rest}
                 >
-                  <UploadImages />
+                <UploadImages formData={formData} />
                 </FileInput>
               )}
             </FormDataConsumer>

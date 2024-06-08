@@ -37,13 +37,21 @@ const dataProvider: any = {
   },
  create: async (resource: string, params: any) => {
     console.log("Data sent to API :", JSON.stringify(params.data));
-    let requestBody;
+    let requestBody: FormData | string;
     const headers: HeadersInit = new Headers();
 
     if (resource === "cars") {
-      requestBody = new FormData();
-      requestBody.append('data', JSON.stringify(params.data));
-      headers.append('Accept', 'multipart/form-data');
+      const formData = new FormData();
+        Object.keys(params.data).forEach(key => {
+            if (key === 'images') {
+                params.data[key].forEach((fileObj: any) => {
+                    formData.append('images', fileObj.rawFile);
+                });
+            } else {
+                formData.append(key, `${params.data[key]}`);
+            }
+        });
+        requestBody = formData;
     } else {
       requestBody = JSON.stringify(params.data);
       headers.append('Content-Type', 'application/json');
@@ -51,7 +59,7 @@ const dataProvider: any = {
 
     const { json } = await fetchUtils.fetchJson(`${apiUrl}/${resource}`, {
       method: "POST",
-      body: requestBody,
+      body: requestBody != undefined ? requestBody : undefined,
       headers: headers,
     });
 
